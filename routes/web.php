@@ -28,10 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::view('/privacy-policy', 'profile.privacy-policy')->name('profile.privacy-policy');
 });
 
 require __DIR__.'/auth.php';
 
 // Third-party authentication routes
-Route::get('/auth/redirect/{provider}', [ThirdPartyProviderAuthController::class, 'redirect'])->name('auth.provider.redirect');
-Route::get('/auth/callback/{provider}', [ThirdPartyProviderAuthController::class, 'callback'])->name('auth.provider.callback');
+Route::get('/auth/{provider}/redirect', [ThirdPartyProviderAuthController::class, 'redirect'])->name('auth.provider.redirect');
+Route::get('/auth/{provider}/callback', [ThirdPartyProviderAuthController::class, 'callback'])->name('auth.provider.callback');
