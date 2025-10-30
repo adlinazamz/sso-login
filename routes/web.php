@@ -30,9 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-    ->name('login');
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+require __DIR__.'/auth.php';
 
 // Third-party authentication routes
 Route::get('/auth/redirect/{provider}', [ThirdPartyProviderAuthController::class, 'redirect'])->name('auth.provider.redirect');
