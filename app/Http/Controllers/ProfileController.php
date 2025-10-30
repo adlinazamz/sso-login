@@ -57,4 +57,29 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+    public function destroyProvider(Request $request)
+    {
+        $user = $request->user();
+
+        // Validate password for security
+        $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+        if (! Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'The password is incorrect.',
+            ])->with('userDeletion', true);
+        }
+
+        // Clear provider fields
+        $user->update([
+            'provider' => null,
+            'provider_id' => null,
+            'avatar' => null,
+        ]);
+
+        return redirect()->route('profile.edit')->with('status', 'provider-deleted');
+    }
+
 }
