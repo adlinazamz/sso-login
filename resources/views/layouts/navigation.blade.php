@@ -42,6 +42,10 @@
                             {{ __('Privacy Policy') }}
                         </x-dropdown-link>
 
+                        <x-dropdown-link :href="route('profile.terms-of-service')">
+                            {{ __('Terms of Service') }}
+                        </x-dropdown-link>
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::view('/privacy-policy', 'profile.privacy-policy')->name('profile.privacy-policy');
+    Route::view('/terms-of-service', 'profile.terms-of-service')->name('profile.terms-of-service');
 });
 
 require __DIR__.'/auth.php';
