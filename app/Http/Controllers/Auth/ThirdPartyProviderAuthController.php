@@ -18,8 +18,24 @@ class ThirdPartyProviderAuthController extends Controller
         if (!in_array($provider, ['google', 'github', 'facebook', 'linkedin', 'gitlab', 'bitbucket', 'slack', 'x', 'apple'])) {
             abort(404);
         }
+        if ($provider === 'linkedin') {
+            $url = Socialite::driver('linkedin')
+            ->scopes(['r_liteprofile', 'r_emailaddress'])
+            ->redirect()
+            ->getTargetUrl();
 
-        return Socialite::driver($provider)->redirect();
+        Log::info('LinkedIn redirect URL', ['url' => $url]);
+
+        return redirect($url);
+        }
+        
+        $url = Socialite::driver($provider)
+            ->stateless()
+            ->redirect()
+            ->getTargetUrl();
+        $url .= '&prompt=login'; // Force login prompt
+
+        return redirect($url);
     }
 
     public function callback($provider)
@@ -68,7 +84,7 @@ class ThirdPartyProviderAuthController extends Controller
         }
 
         Auth::login($user);
-
+        session(['last_oauth_provider' => $provider]);
         return redirect()->intended('/dashboard');
     }
 }
