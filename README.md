@@ -65,25 +65,25 @@ Follow the steps carefully — each includes a placeholder for screenshots you c
    - You’ll land on the Google Cloud dashboard.
 
 2. After signing in, confirm that you can see the project dropdown on the top bar.
-   ![Google Cloud Dashboard](readme_reference/google/step_1/01-google_cloud_dashboard.png)
+   ![Google Cloud Dashboard](readme_references/google/step_1/01-google_cloud_dashboard.png)
    *Main Google Cloud dashboard view.*
 
 ---
 
 ### Step 2: Create a New Project
 1. Click the project dropdown on the top bar.
-    ![New Project Dialog](readme_reference/google/step_2/01-project_dropdown.png)
+    ![New Project Dialog](readme_references/google/step_2/01-project_dropdown.png)
     *Open project dropdown on top bar.*
 2. Select **New Project**.
-    ![New Project Dialog](readme_reference/google/step_2/02-new_project.png)
+    ![New Project Dialog](readme_references/google/step_2/02-new_project.png)
     *Create new project.*
 3. Enter a project details (e.g., `user-auth-sso`).
    *If there are organization associated to the project, change according to the associated organization folder.*
-    ![New Project Dialog](readme_reference/google/step_2/03-project_detail_form.png)
+    ![New Project Dialog](readme_references/google/step_2/03-project_detail_form.png)
     *Create new project.*
 4. Click **Create**.
 5. Project created
-    ![New Project Dialog](readme_reference/google/step_2/04-project_created.png)
+    ![New Project Dialog](readme_references/google/step_2/04-project_created.png)
     *Project created.*
 
 > 💡 *Note: It may take a few seconds for the new project to be created.*
