@@ -48,18 +48,31 @@ This README documents the exact steps QA/Dev/DevOps or other engineers should fo
 
 ## Provider setup
 
-Below are practical step-by-step instructions. Insert screenshots in `assets/images/` next to this README and reference them with standard Markdown `![]()` tags.
+Below are practical step-by-step instructions. Screenshots relevant to the step can be reviewed in readme_references folder.
 
-> **Tip:** capture each console page screenshot and name them clearly: `google-console-create-credentials.png`, `facebook-app-settings.png`, etc.
 
-## 🟦 Google OAuth Setup (Socialite Integration)
+## Google
 
 This section walks through creating Google OAuth credentials for your Laravel Socialite integration.  
-Follow the steps carefully — each includes a placeholder for screenshots you can replace once captured.
+Follow the steps carefully — each includes screenshots for references.
 
 ---
 
-### Step 1: Log in to Google Cloud Console
+### Quick Summary 
+
+
+1. Create a Google Cloud project
+2. Configure the OAuth consent screen (External, basic info)
+3. Create OAuth Client ID (Web App, set redirect URIs)
+4. Copy Client ID & Secret → add to `.env`
+5. If you hit **cURL error 60**, see [cacert.pem guidance](#cacertpem-guidance)
+
+---
+### Walkthrough
+
+
+#### Step 1: Log in to Google Cloud Console
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/).
    - Sign in with your Google account.
    - You’ll land on the Google Cloud dashboard.
@@ -70,67 +83,107 @@ Follow the steps carefully — each includes a placeholder for screenshots you c
 
 ---
 
-### Step 2: Create a New Project
+#### Step 2: Create a New Project
+
 1. Click the project dropdown on the top bar.
-    ![New Project Dialog](readme_references/google/step_2/01-project_dropdown.png)
+    ![New Project Dropdown](readme_references/google/step_2/01-project_dropdown.png)
     *Open project dropdown on top bar.*
+
 2. Select **New Project**.
-    ![New Project Dialog](readme_references/google/step_2/02-new_project.png)
+    ![New Project Button](readme_references/google/step_2/02-new_project.png)
     *Create new project.*
-3. Enter a project details (e.g., `user-auth-sso`).
-   *If there are organization associated to the project, change according to the associated organization folder.*
-    ![New Project Dialog](readme_references/google/step_2/03-project_detail_form.png)
+
+3. Enter project details (e.g., `user-auth-sso`).
+   *If there is an organization associated to the project, change according to the associated organization folder.*
+    ![New Project Detail Form](readme_references/google/step_2/03-project_detail_form.png)
     *Create new project.*
+
 4. Click **Create**.
-5. Project created
-    ![New Project Dialog](readme_references/google/step_2/04-project_created.png)
+
+    ![New Project Confirmation](readme_references/google/step_2/04-project_created.png)
     *Project created.*
 
 > 💡 *Note: It may take a few seconds for the new project to be created.*
     
 ---
 
-### Step 3: Configure OAuth Consent Screen
-1. In the left sidebar, go to **APIs & Services → OAuth consent screen**.
-2. Choose **External** and click **Create**.
-3. Fill out the following fields:
-   - App name  
-   - User support email  
-   - Developer contact email
-4. Scroll down and click **Save and Continue**.
+#### Step 3: Configure OAuth Consent Screen
 
-   ![Consent Screen Setup](public/readme_reference/google/04-consent-screen.png)
+1. Open the newly created project
+    ![Open Project](readme_references/google/step_3/01-select_created_project.png)
+    *Open the user-auth-sso.*
+
+2. In the left sidebar, go to **APIs & Services → OAuth consent screen**.
+    ![OAuth Consent](readme_references/google/step_3/02-navigate_Oauth_consent.png)
+    *Navigate to OAuth consent in the sidebar.*
+
+3. You'll be directed to the OAuth Overview. Click **Get Started**.
+    ![OAuth Overview](readme_references/google/step_3/03-oauth_overview_config.png)
+    *OAuth consent overview.*
+
+4. Fill out the project configuration:
+   - App name  (it's recommended to use the same name as the project created or based on the usage)
+   - User support email  (based on the developer associated by the project)
+    ![OAuth App Information](readme_references/google/step_3/04-app_information.png)
+    *App information form.*
+   - Audience: Choose based on the app purpose:
+    **Internal** for within the organization
+    **External** for any Google account
+    ![OAuth Audience](readme_references/google/step_3/04-audience_type.png)
+    *Select audience type corresponding of the app usage.*   
+   - Contact Information: Developer email for google to notify
+
+5. Finish up the setup and agree to the Google API Services: User Data Policy and click **Save and Continue**. Then click **Create**
+   ![Consent Screen Setup](readme_references/google/step_3/05-google_api_service.png)
    *Filling in OAuth consent screen details.*
 
-5. On the next pages (Scopes and Test Users), you can click **Save and Continue** until the summary.
+6. Once created, you'll be directed to the OAuth Overview
+   ![Successful Consent Screen Setup](readme_references/google/step_3/06-successful_OAuth_consent.png)
 
 ---
 
-### Step 4: Create OAuth Client ID
-1. Navigate to **APIs & Services → Credentials**.
-2. Click **+ Create Credentials → OAuth Client ID**.
-3. Choose **Web Application**.
-4. Fill out:
-   - Name: `Laravel Socialite`
-   - Authorized JavaScript origins: your app’s base URL (e.g., `http://localhost:8000`)
+#### Step 4: Create OAuth Client ID
+
+1. Click **Create OAuth client**
+   ![Create OAuth Client](readme_references/google/step_4/01-create_client_OAuth.png)
+
+2. Choose the application type  from the drop down *in this case, we use **Web Application***. 
+   ![OAuth Client Application](readme_references/google/step_4/02-choosing_application_type.png)
+
+3. Fill out:
+   - Name  (eg:`user-auth-sso`)
+   - Authorized JavaScript origins (optional and skippable if not necessary)
    - Authorized redirect URIs:  
      ```
      http://localhost:8000/auth/google/callback
+     https://localhost:8000/auth/google/callback
+     http://yourdomain.com/auth/google/callback
      https://yourdomain.com/auth/google/callback
      ```
+
+> *Google OAuth doesn't accept yourdomain.test as it only accepts TLDs.*
+
 5. Click **Create**.
 
-   ![OAuth Client Form](public/readme_reference/google/05-oauth-client-form.png)
-   *Creating the OAuth Client ID for Socialite.*
+> The creation process for the OAuth client may take anywhere from a few minutes to a few hours.
 
 ---
 
-### Step 5: Copy Your Client Credentials
-1. A dialog will appear with your **Client ID** and **Client Secret**.
-2. Copy both and store them safely.
+#### Step 5: Copy Your Client Credentials
 
-   ![Client Credentials](public/readme_reference/google/06-client-credentials.png)
-   *Google OAuth Client credentials window.*
+1. A dialog will appear with your **Client ID** and **Client Secret**. 
+*Sensitive values (Client ID and Client Secret) have been redacted for security.*
+
+   - 🔴 **Client ID** (highlighted in red box): This value can be copied and retrieved later from the Clients tab.
+   ![Client ID](readme_references/google/step_5/01-generated_client_access_id.png)
+   *Client ID credential.*
+   - 🟢 **Client Secret** (highlighted in green box): This value is only shown once. You must copy and store it securely before closing the dialog.
+   ![Client Secret](readme_references/google/step_5/01-generated_client_secret_key.png)
+   *Client secret key credential.*
+
+>*Make sure both credentials are stored securely before clicking "OK"*
+
+2. Copy both and store them safely.
 
 3. Add them to your `.env` file:
 
@@ -138,7 +191,20 @@ Follow the steps carefully — each includes a placeholder for screenshots you c
    GOOGLE_CLIENT_ID=your-client-id
    GOOGLE_CLIENT_SECRET=your-client-secret
    GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback
+   ```
+---
 
+#### Step 6: Troubleshooting — cURL Error 60
+
+If you encounter the error:
+
+> **cURL error 60: SSL certificate problem: unable to get local issuer certificate**
+
+…it means your system cannot verify Google’s SSL certificate.  
+Refer to the [Appendix — cacert.pem guidance](#cacertpem-guidance) to resolve this.
+
+[↑ Back to top](#table-of-contents)
+[↑ Back to provider](#google)
 ---
 
 ### Facebook (Meta)
