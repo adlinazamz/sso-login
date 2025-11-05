@@ -533,7 +533,7 @@ protected $listen = [
 
 ## Troubleshoot
 
-### cURL Error 60 —SSL Certificate Problem
+### cURL Error 60 -- SSL Certificate Problem
 
 If you see the following error when attempting to log in using any provider:
 
