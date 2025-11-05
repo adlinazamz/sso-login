@@ -13,11 +13,13 @@
    * [Google](#google)
    * [Facebook / Meta](#facebook--meta)
    * [X](#twitter--x)
-   * [Apple Sign in with Apple](#apple)
-5. [Laravel (Socialite) configuration](#laravel-socialite-configuration)
-6. [Server TLS / cacert.pem guidance](#cacertpem-guidance)
-7. [Testing tips (force reauth for certain providers)](#testing-tips)
-8. [Appendix — sample `.env` variables & code snippets](#appendix)
+   * [ON HOLD: Apple Sign in with Apple](#apple)
+5. [Testing tips](#testing-tips)
+6. [Troubleshoot](#troubleshoot)
+   * [cURL Error 60](#troubleshoot-curl-error-60)
+   * [Meta Ineligible Submission Warning](#troubleshoot-meta-ineligible-submission)
+
+7. [Appendix — sample `.env` variables & code snippets](#appendix)
 
 ---
 
@@ -51,27 +53,27 @@ This README documents the exact steps QA/Dev/DevOps or other engineers should fo
 Below are practical step-by-step instructions. Screenshots relevant to the step can be reviewed in readme_references folder.
 
 
-## Google
+### Google
 
 This section walks through creating Google OAuth credentials for your Laravel Socialite integration.  
 Follow the steps carefully — each includes screenshots for references.
 
 ---
 
-### Quick Summary 
+#### Quick Summary 
 
+1. Create a Google Cloud project (for managing OAuth credentials)
+2. Configure the OAuth consent screen (set app name, audience, and contact info)
+3. Create OAuth Client ID (choose Web App, set redirect URIs)
+4. Copy Client ID & Secret → add to `.env` for Laravel Socialite
+5. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60)
 
-1. Create a Google Cloud project
-2. Configure the OAuth consent screen (External, basic info)
-3. Create OAuth Client ID (Web App, set redirect URIs)
-4. Copy Client ID & Secret → add to `.env`
-5. If you hit **cURL error 60**, see [cacert.pem guidance](#cacertpem-guidance)
 
 ---
-### Walkthrough
+#### Walkthrough
 
 
-#### Step 1: Log in to Google Cloud Console
+##### Step 1: Log in to Google Cloud Console
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/).
    - Sign in with your Google account.
@@ -83,7 +85,7 @@ Follow the steps carefully — each includes screenshots for references.
 
 ---
 
-#### Step 2: Create a New Project
+##### Step 2: Create a New Project
 
 1. Click the project dropdown on the top bar.
     ![New Project Dropdown](readme_references/google/step_2/01-project_dropdown.png)
@@ -107,7 +109,7 @@ Follow the steps carefully — each includes screenshots for references.
     
 ---
 
-#### Step 3: Configure OAuth Consent Screen
+##### Step 3: Configure OAuth Consent Screen
 
 1. Open the newly created project
     ![Open Project](readme_references/google/step_3/01-select_created_project.png)
@@ -142,7 +144,7 @@ Follow the steps carefully — each includes screenshots for references.
 
 ---
 
-#### Step 4: Create OAuth Client ID
+##### Step 4: Create OAuth Client ID
 
 1. Click **Create OAuth client**
    ![Create OAuth Client](readme_references/google/step_4/01-create_client_OAuth.png)
@@ -169,17 +171,15 @@ Follow the steps carefully — each includes screenshots for references.
 
 ---
 
-#### Step 5: Copy Your Client Credentials
+##### Step 5: Copy Your Client Credentials
 
 1. A dialog will appear with your **Client ID** and **Client Secret**. 
 *Sensitive values (Client ID and Client Secret) have been redacted for security.*
 
    - 🔴 **Client ID** (highlighted in red box): This value can be copied and retrieved later from the Clients tab.
    ![Client ID](readme_references/google/step_5/01-generated_client_access_id.png)
-   *Client ID credential.*
    - 🟢 **Client Secret** (highlighted in green box): This value is only shown once. You must copy and store it securely before closing the dialog.
    ![Client Secret](readme_references/google/step_5/01-generated_client_secret_key.png)
-   *Client secret key credential.*
 
 >*Make sure both credentials are stored securely before clicking "OK"*
 
@@ -192,180 +192,372 @@ Follow the steps carefully — each includes screenshots for references.
    GOOGLE_CLIENT_SECRET=your-client-secret
    GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback
    ```
----
 
-#### Step 6: Troubleshooting — cURL Error 60
+> ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
+> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
 
-If you encounter the error:
-
-> **cURL error 60: SSL certificate problem: unable to get local issuer certificate**
-
-…it means your system cannot verify Google’s SSL certificate.  
-Refer to the [Appendix — cacert.pem guidance](#cacertpem-guidance) to resolve this.
 
 [↑ Back to top](#table-of-contents)
+
 [↑ Back to provider](#google)
 ---
 
 ### Facebook (Meta)
 
-1. Go to Facebook for Developers → My Apps → Create App.
-2. Add the **Facebook Login** product.
-3. Under Settings → Basic, copy App ID and App Secret.
-4. Under Facebook Login → Settings, set the Valid OAuth Redirect URIs to `https://your-domain.com/auth/facebook/callback`.
-5. Add required permissions (e.g., `email`).
+This section walks through creating Facebook (Meta) OAuth credentials for your Laravel Socialite integration.  
+Follow the steps carefully — each includes screenshots for references.
+
+>This setup is intended for testing purposes only. If you're **publishing the app**, please follow the **App customization and requirements checklist in the Dashboard** of your newly created application.
 
 ---
 
-### GitHub
+#### Quick Summary 
 
-1. Go to GitHub → Settings → Developer settings → OAuth Apps → New OAuth App.
-2. Set Authorization callback URL to `https://your-domain.com/auth/github/callback`.
-3. Save Client ID / Client Secret.
+1. Create a Facebook App via [Facebook for Developers](https://developers.facebook.com/)
+2. Add the **Facebook Login** product and select the appropriate use case
+3. Customize the use case and add required permissions (e.g., `email`)
+4. Test the login flow using Graph API Explorer (optional)
+5. Copy App ID & Secret → add to `.env`
+6. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60)
 
-> Note: GitHub does not support `prompt=login`. See testing tips for forcing reauth.
+---
+#### Walkthrough
+
+##### Step 1: Log in to Meta Business
+1. Go to [Meta Developers](https://developers.facebook.com).
+   - Sign in with *Facebook*
+   ![facebook Developers Login](readme_references/facebook/step_1/01-developers_facebook.png)
+   *Facebook Developers login page.*
+
+>*If logged in through Facebook, code will be sent to your facebook account email*
+
+### Step 2: Create a New App
+
+1. Go to [Facebook for Developers → My Apps](https://developers.facebook.com/apps/)
+
+2. Click **Create App**
+
+3. Fill in:
+   **App details**
+   - App Name (e.g. `user-auth-sso`)
+   - Contact Email
+   **Use case**
+   - Select the respective Use case for the API (since this repo is for sso authentication, select **Authenticate and request data from users with Facebook login**)
+   ![App Use Case](readme_references/facebook/step_2/03-Meta_use_case.png)  
+   *Fill in app details.*
+   **Business**
+   - Business Account (optional)  
+   **Requirements**
+   This are for reference on the steps required for the use case application.
+   -Click **Next**
+
+4. Make sure the overview meet with what the application is about
+   ![App Setup Overview](readme_references/facebook/step_2/04-Meta_setup_overview.png)  
+   *Check the application setup.*
+
+5. Click **Go to Dashboard**
+>This will take some time to create the new application
+   ![App dashboard](readme_references/facebook/step_2/05-New_app_dashboard.png)  
+   *Application dashboard.*
+---
+> **Optional:** Steps 3 and 4 are only needed if you're customizing the use case or testing the API manually.
+
+### Step 3: Setting up the application (Optional)
+
+1. Following the app customization and requirement, navigate to **Customize the Authenticate and request data from users with Facebook Login use case**
+![Navigate Use Case](readme_references/facebook/step_3/01-use_case_config.png)  
+   *Navigate to Use Case config.*
+
+2. Customize the use case according to the app login flow. *Since the repo pass email on login authenticate, add **email**.* 
+   ![Custom Use Case](readme_references/facebook/step_3/02-custom_use_case.png)  
+   *Customize use case: Adding email*
+
+3. Navigate back to the **Dashboard** and the **Customize the Authenticate and request data from users with Facebook Login use case** are now green.
+
+---
+>**Optional:** Steps 3 and 4 are only needed if you're customizing the use case or testing the API manually.
+### Step 4: Application API testing (optional)
+
+1. Just like in Step 3.1, navigate to **dashboard** and click **Review and complete testing requirement**
+![App API Test](readme_references/facebook/step_4/01-app_api_testing.png)
+The dropdown below show the current active use case enabled for the Facebook API.
+
+2. Click **Open Graph API explorer** to test the application API.
+   - Change the setup according to the need:
+      - Meta App: Select the project  (eg: user-auth-sso)
+      - User or Page: Select **Get User Access Token** since we are testing if it's able to read and get the corresponding data related to the user.
+      -Add a permission: Select **email** since we're attempting to check if its able to read the email associated to the facebook account
+   - Click **Generate Access Token**
+   >*On generate token, Facebook modal popup will ask for permission to log and request access to **Name and profile picture** and  **Email address**. Select **Continue** to proceed with token generation*
+   - In the form field, add **email** field
+   ```
+   me?fields=id,name, email
+   ```
+   - Click **Submit**
+
+3. On successful API call, it will show:
+![Successful API test](readme_references/facebook/step_4/03-successful_api_test.png)
+*Successful API test*
+---
+
+### Step 5: Get App Credentials
+
+1. Go to **Settings → Basic**
+![Navigate Settings Basic ](readme_references/facebook/step_5/01-navigate_app_settings_basic.png)
+*Navigate to App Settings*
+2. Copy your **App ID** and **App Secret**
+*Sensitive values (Client ID and Client Secret) have been redacted for security.*
+
+   - 🔴 **Client ID** (highlighted in red box)
+   - 🟢 **Client Secret** (highlighted in green box)
+
+   ![App Credentials](readme_references/facebook/step_5/01-app_credentials.png)  
+   *Client ID and Client Secret key.*
+
+3. Add them to your `.env` file:
+
+   ```env
+   FACEBOOK_CLIENT_ID=your-app-id
+   FACEBOOK_CLIENT_SECRET=your-app-secret
+   FACEBOOK_REDIRECT_URI=${APP_URL}/auth/facebook/callback
+   ```
+
+> ⚠️ If you see a warning about **Currently Ineligible for Submission**, this is expected for internal/test apps.  
+> See [Troubleshoot — Meta Ineligible Submission Warning](#troubleshoot-meta-ineligible-submission) for guidance on safely ignoring this warning.
+
+> ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
+> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
+
+
+[↑ Back to top](#table-of-contents)
+
+[↑ Back to provider](#facebook)
+
 
 ---
 
-### GitLab
+### X (Twitter)
 
-1. Go to GitLab → User Settings → Applications → New application (or Admin area for self-hosted).
-2. Add redirect URI `https://your-domain.com/auth/gitlab/callback`.
-3. Save Application ID / Secret.
+This section walks through creating X (Twitter) OAuth credentials for your Laravel Socialite integration.  
+Follow the steps carefully — each includes screenshots for reference.
+
+> This setup is intended for testing purposes only. If you're publishing the app, ensure your X Developer App is fully reviewed and approved for production access.
+
+>*Please note that on the free tier, X only allows a single OAuth app quota per account.*
+---
+
+### Quick Summary
+
+1. Create a X Developer App via [Twitter Developer Portal](https://developer.x.com/en)
+2. Set up project and app details (name, use case, description)
+3. Enable 3-legged OAuth and set callback URL
+4. Add required permissions (e.g., `email`) and app metadata (website, privacy policy)
+5. Copy API Key & Secret → add to `.env`
+6. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60)
 
 ---
 
-### Slack
+### Walkthrough
 
-1. Go to Slack API → Create an App.
-2. Add OAuth & Permissions, set Redirect URLs.
-3. Install the app to your workspace and get Client ID/Secret.
+#### Step 1: Create a X Developer App
+
+1. Go to [X Developer Portal](https://developer.x.com/en)
+![X Developer Portal](readme_references/x/step_1/01-twitter_dashboard.png)
+*X developer portal*
+
+2. Log in with your X (Twitter) account and select  **Developer Portal**. You'll land on the Developer portal dashboard.
+3. Click **+ Create Project**
+![X Create project](readme_references/x/step_1/02-x_developer_dashboard.png)
+*X project fillable*
+4. Setup the new project 
+![X Project Setup](readme_references/x/step_1/03-x_new_project_setup.png)
+*X project setup*
+
+Fill in:
+**Describe new Project**
+   - Project Name (e.g. `User Twitter SSO`)
+   - Fill in the use case based on the need of the app creation from the dropdown
+   - Project Description
+**Name your App**
+   - App Name (e.g. `user-auth-sso`)
+
+4. Click **Next** and  immediately directed to the **Keys & Tokens**
+
+5. Store the **App ID** and **App Secret Key**
+>The value is shown only once. Please store it securely before clicking **App Setting**. Else, the Secret Key will needed to be regenerated.
+---
+
+#### Step 2: Enable 3-legged OAuth and Set Callback URL
+
+1. In your app settings, go to **User authentication settings**
+![X Project Setup](readme_references/x/step_2/01-app_setting.png)
+*X project setup*
+2. Enable **OAuth 1.0a** and setup based on the application need:
+   - App permission: Read 
+   *Since this is for SSO authentication, **enable email permission** as it's required by this login flow.*
+   - App Type
+   
+3. Set App info:
+   - **Callback URI / Redirect URL**:  
+     ```
+     https://yourdomain.com/auth/twitter/callback
+     http://yourdomain.com/auth/twitter/callback
+     https://yourdomain.test/auth/twitter/callback
+     http://yourdomain.test/auth/twitter/callback
+     https://localhost/auth/twitter/callback
+     http://localhost/auth/twitter/callback
+     ```
+   - **Website URL**: Your app or company site (can be placeholder for testing)
+   *As we enabled the email permission, a valid Website URL is required. Use a real or placeholder domain (e.g. https://example.com)  localhost URLs are not accepted.*
+
+   - **Terms of Service** (can use placeholder example.com)
+   - **Privacy Policy** (can use placeholder example.com)
+
+4. Save
 
 ---
 
-### Bitbucket
+#### Step 3: Get API Key and Secret
 
-1. Bitbucket Settings → OAuth → Add consumer.
-2. Set callback URL `https://your-domain.com/auth/bitbucket/callback`.
-3. Save Key/Secret.
+1. Add the **Client ID** and **Client Secret** to your `.env` file:
+   ```env
+   TWITTER_CLIENT_ID=your-api-key
+   TWITTER_CLIENT_SECRET=your-api-secret
+   TWITTER_REDIRECT_URI=${APP_URL}/auth/twitter/callback
+   ```
+
+> If forgot the **Client ID** and **Client Secret**, skip to step 3.2
+
+2. If the **Client ID** and **Client Secret** isn't saved before:
+   - Go to **Keys and Tokens** tab
+   ![X App Key Token](readme_references/x/step_3/01-app_keys_tokens.png)
+   *X app key token*
+   - Scroll down to **Oauth 2.0 Client ID and Client Secret**
+   - Copy the **Client ID** and regenerate **Client Secret**
+   - Store **Client ID** and new **Client Secret**
+   - Redo step 3.1 
+
+> Regenerating **Client Secret** will invalidate the old **Client Secret**. Note: Update the **previous Client Secret** to the **newly generated Client Secret**
+---
+
+> ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
+> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
+
+[↑ Back to top](#table-of-contents)  
+[↑ Back to provider](#twitter--x)
 
 ---
 
-### LinkedIn
+## Sign in with Apple
 
-1. Go to LinkedIn Developer Portal → Create app.
-2. Add Authorized Redirect URLs.
-3. Request `r_liteprofile` and `r_emailaddress` scopes if needed.
+This section walks through creating **Sign in with Apple** OAuth credentials for your Laravel Socialite integration.  
+Follow the steps carefully — each includes screenshots for reference.
 
----
-
-### Apple (Sign in with Apple)
-
-1. Register your app in Apple Developer → identifiers and Services.
-2. Configure Sign in with Apple and generate keys.
-3. Apple uses JWT-based client secret; read Apple docs for details.
+> This setup is intended for testing purposes only. If you're publishing the app, ensure your Apple Developer account is active and your app is properly configured for production.
 
 ---
 
-## Laravel (Socialite) configuration
+### Quick Summary
 
-1. Add your client keys to `.env`:
+1. Create an App ID and Service ID via [Apple Developer Portal](https://developer.apple.com/account/)
+2. Enable Sign in with Apple and configure redirect URI
+3. Generate and download a private key
+4. Copy credentials → add to `.env`
+5. Configure Laravel Socialite and event listener
+6. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60)
 
-```dotenv
-GITHUB_CLIENT_ID=xxx
-GITHUB_CLIENT_SECRET=yyy
-GITHUB_REDIRECT=https://your-domain.com/auth/github/callback
+---
+
+### Walkthrough
+
+#### Step 1: Log in to Apple Developer Portal
+
+1. Go to [Apple Developer Portal](https://developer.apple.com/account/)
+2. Sign in with your Apple ID
+3. Navigate to **Certificates, Identifiers & Profiles**
+
+---
+
+#### Step 2: Create App ID and Service ID
+
+1. Under **Identifiers**, click **+** to create a new App ID
+2. Choose **App IDs → App**
+3. Fill in:
+   - Name (e.g. `user-auth-sso`)
+   - Bundle ID (reverse domain format, e.g. `com.example.userauth`)
+4. Enable **Sign in with Apple** capability
+
+5. Then, create a **Service ID**:
+   - Name (e.g. `user-auth-sso-service`)
+   - Identifier (e.g. `com.example.userauth.service`)
+   - Enable **Sign in with Apple**
+   - Set the **Redirect URI**:
+     ```
+     https://yourdomain.com/auth/apple/callback
+     ```
+
+---
+
+#### Step 3: Generate Private Key
+
+1. Go to **Keys** → click **+**
+2. Name the key (e.g. `Apple SSO Key`)
+3. Enable **Sign in with Apple**
+4. Select the previously created App ID
+5. Click **Continue** and **Download** the `.p8` private key file
+
+> ⚠️ This file is only downloadable once. Store it securely.
+
+---
+
+#### Step 4: Add Credentials to `.env`
+
+```env
+APPLE_CLIENT_ID=your-service-id
+APPLE_TEAM_ID=your-team-id
+APPLE_KEY_ID=your-key-id
+APPLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+APPLE_REDIRECT_URI=${APP_URL}/auth/apple/callback
 ```
 
-2. `config/services.php` example:
+---
+
+#### Step 5: Configure Laravel Socialite
+
+1. In `config/services.php`:
 
 ```php
-'github' => [
-  'client_id' => env('GITHUB_CLIENT_ID'),
-  'client_secret' => env('GITHUB_CLIENT_SECRET'),
-  'redirect' => env('GITHUB_REDIRECT'),
+'apple' => [
+    'client_id' => env('APPLE_CLIENT_ID'),
+    'team_id' => env('APPLE_TEAM_ID'),
+    'key_id' => env('APPLE_KEY_ID'),
+    'private_key' => env('APPLE_PRIVATE_KEY'),
+    'redirect' => env('APPLE_REDIRECT_URI'),
 ],
 ```
 
-3. Controller best practice (use `with()` and dynamic params):
+2. If using [SocialiteProviders/Apple](https://socialiteproviders.com/apple/), register the provider in `EventServiceProvider.php`:
 
 ```php
-public function redirect($provider)
-{
-    $supported = ['google', 'github', 'facebook', 'linkedin', 'gitlab', 'bitbucket', 'slack', 'x', 'apple'];
-    abort_unless(in_array($provider, $supported), 404);
-
-    $driver = Socialite::driver($provider)->stateless();
-
-    $params = config("oauth_providers.$provider", []);
-    if (!empty($params)) {
-        $driver->with($params);
-    }
-
-    session(['last_oauth_provider' => $provider]);
-    return $driver->redirect();
-}
-```
-
-4. Example `config/oauth_providers.php` (commit to repo):
-
-```php
-return [
-  'google' => ['prompt' => 'login'],
-  'facebook' => ['auth_type' => 'reauthenticate'],
-  'github' => ['state' => null], // we will generate per-request
-  'gitlab' => ['state' => null],
-  'bitbucket' => ['state' => null],
-  'slack' => ['state' => null],
+protected $listen = [
+    \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+        \SocialiteProviders\Apple\AppleExtendSocialite::class.'@handle',
+    ],
 ];
 ```
 
-> When using `state => null` you can programmatically set it to `uniqid('reauth_', true)` before calling `with()`.
+---
+
+> ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
+> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
+
+[↑ Back to top](#table-of-contents)  
+[↑ Back to provider](#apple)
+
 
 ---
 
-## cacert.pem guidance (Guzzle / local dev)
-
-Some Windows/PHP environments (like Laragon) don’t automatically use a system CA bundle. If you hit TLS errors when Socialite/Guzzle attempts `->user()` (e.g. `SSL certificate problem: unable to get local issuer certificate`), provide a `cacert.pem` and point Guzzle to it.
-
-1. Download the latest `cacert.pem` from the curl project: [https://curl.se/docs/caextract.html](https://curl.se/docs/caextract.html)
-2. Place it in a safe path in your project (example): `storage/certs/cacert.pem`.
-3. Use a custom Guzzle client in Socialite calls:
-
-```php
-use GuzzleHttp\Client;
-
-$client = new Client(['verify' => storage_path('certs/cacert.pem')]);
-$socialUser = Socialite::driver($provider)->stateless()->setHttpClient($client)->user();
-```
-
-4. **Do not commit** the `cacert.pem` if it’s environment-specific; instead add instructions and optionally an example file.
-
----
-
-## Flutter integration notes
-
-1. Place API logic in `lib/services/api_service.dart` (HTTP client) and use `flutter_web_auth_2` or external browser + deep link for the OAuth flow.
-
-2. Typical flow (recommended):
-
-   * Flutter opens the backend endpoint: `https://your-domain.com/auth/{provider}` (this will redirect to provider console)
-   * Provider redirects back to backend callback: `/auth/{provider}/callback`, backend exchanges code for token and then redirects to a **custom-scheme** deep link such as `myapp://auth?token=JWT`.
-   * Flutter intercepts the deep link and stores token securely (e.g., `flutter_secure_storage`).
-
-3. Example deep link callback handler:
-
-```dart
-final result = await FlutterWebAuth2.authenticate(
-  url: 'https://your-domain.com/auth/google',
-  callbackUrlScheme: 'myapp',
-);
-final token = Uri.parse(result).queryParameters['token'];
-```
-
----
-
-## Testing tips — forcing reauth for GitHub/GitLab/Slack/Bitbucket
+## Testing tips 
 
 * Many providers (GitHub, GitLab, Bitbucket, Slack) **do not honor** `prompt=login`.
 * Two practical techniques for test workflows:
@@ -375,39 +567,69 @@ final token = Uri.parse(result).queryParameters['token'];
 
 ---
 
-## Security & best practices
+## Troubleshoot
 
-* Store client secrets in environment variables, never commit them.
-* Validate `state` in callbacks to prevent CSRF.
-* Use `stateless()` if you do not rely on session state and implement your own state handling.
-* Limit scopes to the minimum required.
-* Rotate client secrets periodically.
+### cURL Error 60 — SSL Certificate Problem {#troubleshoot-curl-error-60}
 
----
+If you see the following error when attempting to log in using any provider:
 
-## How to make this README look professional
+> **cURL error 60: SSL certificate problem: unable to get local issuer certificate**
 
-* **Top-level summary**: one-liner + badges (build, docs, license).
-* **Table of contents**: helps navigation for long docs.
-* **Clear headings and code blocks**: use fenced code blocks and language hints.
-* **Screenshots + captions**: place images in `assets/images/` and reference them.
-* **Examples + copy-paste snippets**: provide ready-to-use `.env` and `config/services.php` snippets.
-* **Checklist for QA**: short tasks (create client id, add redirect, test login, test logout, verify token)
-* **Changelog**: small `CHANGELOG.md` or maintenance notes for console UI changes.
+…it means your system cannot verify the provider’s SSL certificate.
 
-Visual tips:
+#### Fix:
 
-* Use consistent screenshot dimensions.
-* Add small arrows or circles on screenshots (use simple image editor) to highlight fields.
-* Keep sections short; link to provider docs for deeper details.
+1. Download the latest `cacert.pem` from [https://curl.se/docs/caextract.html](https://curl.se/docs/caextract.html)
+2. Place the file somewhere accessible  
+   **Example (Laragon):**  
+   `\laragon\bin\php\php-8.1.10-Win32-vs16-x64\extras\ssl\cacert.pem`  
+   > Any location is fine — just make sure the path is correct in your config.
 
-Badge example at top of README (use shields.io):
+3. Edit your `php.ini`:
 
-```md
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-setup-brightgreen.svg)](README.md)
-```
+   ```ini
+   [curl]
+   curl.cainfo = "C:\\laragon\\bin\\php\\php-8.1.10-Win32-vs16-x64\\extras\\ssl\\cacert.pem"
 
+   [openssl]
+   openssl.cafile = "C:\\laragon\\bin\\php\\php-8.1.10-Win32-vs16-x64\\extras\\ssl\\cacert.pem"
+   ```
+
+4. Restart Laragon/Apache
+
+
+### Facebook: “Currently Ineligible for Submission” Warning {#troubleshoot-meta-ineligible-submission}
+
+
+If you see the following warning in your app dashboard:
+
+> **Currently Ineligible for Submission**  
+> Your submission is missing data in the following fields:  
+> - App icon (1024 x 1024)  
+> - Privacy policy URL  
+> - User data deletion  
+> - Category  
+
+You can safely ignore this warning if your app is used for internal testing or development.
+
+You only need to resolve this if:
+- You're publishing the app for public use
+- You're requesting sensitive permissions
+- You're submitting for full App Review
+
+
+### Other Common Issues
+
+> ⚠️ **Redirect URI mismatch**  
+> Double-check that your redirect URI in the provider dashboard **exactly matches** the one in your `.env`. Even a missing `/` or protocol mismatch (`http` vs `https`) can break the flow.
+
+> ⚠️ **Invalid client credentials**  
+> If you see an error like `invalid_client`, your client ID or secret may be incorrect or expired. Regenerate them from the provider dashboard and update your `.env`.
+
+> ⚠️ **Missing email scope**  
+> Some providers (like Apple or Twitter) require explicit permission to access the user’s email. Make sure the correct scopes are enabled in the provider dashboard and requested in your code.
+
+> Since the current application is using **SSL**, make sure **SSL enabled in port 443**. 
 ---
 
 ## Appendix — sample .env and snippets
@@ -416,53 +638,52 @@ Badge example at top of README (use shields.io):
 
 ```dotenv
 APP_URL=https://your-domain.com
-GITHUB_CLIENT_ID=your_github_id
-GITHUB_CLIENT_SECRET=your_github_secret
-GITHUB_REDIRECT=${APP_URL}/auth/github/callback
+X_CLIENT_ID=your_x_id
+X_CLIENT_SECRET=your_x_secret
+X_REDIRECT=${APP_URL}/auth/x/callback
 
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
+GOOGLE_CLIENT_ID=y
+GOOGLE_CLIENT_SECRET=your-client-secret
 GOOGLE_REDIRECT=${APP_URL}/auth/google/callback
-```
 
-Controller callback example (use Guzzle cacert path):
+FACEBOOK_CLIENT_ID=2017647425442989
+FACEBOOK_CLIENT_SECRET=1a169aa14d1f768d1edad3e8115a5891
+FACEBOOK_REDIRECT_URI=https://localhost/auth/facebook/callback
 
-```php
-use GuzzleHttp\Client;
+APPLE_CLIENT_ID=your-apple-client-id
+APPLE_CLIENT_SECRET=your-apple-client-secret
+APPLE_REDIRECT_URI=https://localhost/auth/apple/callback
 
-try {
-    $client = new Client(['verify' => storage_path('certs/cacert.pem')]);
-    $socialUser = Socialite::driver($provider)->stateless()->setHttpClient($client)->user();
-} catch (\Exception $e) {
-    Log::error('Socialite error', ['message' => $e->getMessage()]);
-    return redirect()->route('login')->withErrors(['social_login' => 'Login failed']);
-}
-```
+
 
 ---
 
-## Where to place images and cacert
+## ✅ Revised “Appendix” Section
 
+```markdown
+## Appendix — Sample `.env` Variables & Controller Snippets
+
+### `.env` snippet for the API
+
+```dotenv
+APP_URL=https://your-domain.com
+
+   GOOGLE_CLIENT_ID=your-client-id
+   GOOGLE_CLIENT_SECRET=your-client-secret
+   GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback
+
+   FACEBOOK_CLIENT_ID=your-app-id
+   FACEBOOK_CLIENT_SECRET=your-app-secret
+   FACEBOOK_REDIRECT_URI=${APP_URL}/auth/facebook/callback
+
+   TWITTER_CLIENT_ID=your-api-key
+   TWITTER_CLIENT_SECRET=your-api-secret
+   TWITTER_REDIRECT_URI=${APP_URL}/auth/twitter/callback
+
+   APPLE_CLIENT_ID=your-service-id
+   APPLE_TEAM_ID=your-team-id
+   APPLE_KEY_ID=your-key-id
+   APPLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+   APPLE_REDIRECT_URI=${APP_URL}/auth/apple/callback
 ```
-repo-root/
-  README.md (this file)
-  assets/
-    images/
-      google-console-create-credentials.png
-      facebook-app-settings.png
-  storage/
-    certs/
-      cacert.pem (example or symlinked to shared CA bundle)
-```
-
-> **Note:** Do not commit private keys or actual cacert if organization policy prevents it. Instead add a `cacert.example` or instructions to download.
-
 ---
-
-If you want, I can:
-
-* Add real example screenshots into `assets/images/` if you upload them here.
-* Create a minimal `cacert.example` file (placeholder) and show how to point Guzzle to it.
-* Produce a `CHANGELOG` and a short `qa-checklist.md`.
-
-Which would you like me to do next?
