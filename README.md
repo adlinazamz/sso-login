@@ -317,8 +317,7 @@ This section walks through creating X (Twitter) OAuth credentials for your Larav
 Follow the steps carefully — each includes screenshots for reference.
 
 > This setup is intended for testing purposes only. If you're publishing the app, ensure your X Developer App is fully reviewed and approved for production access.
-
->*Please note that on the free tier, X only allows a single OAuth app quota per account.*
+>Please note that on the free tier, X only allows a single OAuth app quota per account.
 ---
 
 ### Quick Summary
@@ -360,7 +359,7 @@ Fill in:
 
 5. Store the **App ID** and **App Secret Key**
 
-> *The value is shown only once. Please store it securely before clicking **App Setting**. Else, the Secret Key will needed to be regenerated.*
+> The value is shown only once. Please store it securely before clicking **App Setting**. Else, the Secret Key will needed to be regenerated.
 ---
 
 #### Step 2: Enable 3-legged OAuth and Set Callback URL
@@ -593,7 +592,7 @@ You only need to resolve this if:
 > ⚠️ **Missing email scope**  
 > Some providers (like Apple or Twitter) require explicit permission to access the user’s email. Make sure the correct scopes are enabled in the provider dashboard and requested in your code.
 
-> Since the current application is using **SSL**, make sure **SSL enabled in port 443**. 
+**Note**: *Since the current application is using **SSL**, make sure **SSL enabled in port 443**. *
 ---
 
 ## Appendix — sample .env and snippets
@@ -617,4 +616,5 @@ FACEBOOK_REDIRECT_URI=https://localhost/auth/facebook/callback
 APPLE_CLIENT_ID=your-apple-client-id
 APPLE_CLIENT_SECRET=your-apple-client-secret
 APPLE_REDIRECT_URI=https://localhost/auth/apple/callback
+```
 ---
