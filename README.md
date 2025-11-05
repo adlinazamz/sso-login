@@ -136,7 +136,7 @@ Follow the steps carefully — each includes screenshots for references.
    - Contact Information: Developer email for google to notify
 
 5. Finish up the setup and agree to the Google API Services: User Data Policy and click **Save and Continue**. Then click **Create**
-   ![Consent Screen Setup](readme_references/google/step_3/05-google_api_service.png)
+   ![Consent Screen Setup](readme_references/google/step_3/05-agree_google_api_service.png)
    *Filling in OAuth consent screen details.*
 
 6. Once created, you'll be directed to the OAuth Overview
@@ -163,9 +163,9 @@ Follow the steps carefully — each includes screenshots for references.
      https://yourdomain.com/auth/google/callback
      ```
 
-> *Google OAuth doesn't accept yourdomain.test as it only accepts TLDs.*
+**Note:** Google OAuth doesn't accept `yourdomain.test` — only real TLDs are allowed.
 
-5. Click **Create**.
+4. Click **Create**.
 
 > The creation process for the OAuth client may take anywhere from a few minutes to a few hours.
 
@@ -181,7 +181,7 @@ Follow the steps carefully — each includes screenshots for references.
    - 🟢 **Client Secret** (highlighted in green box): This value is only shown once. You must copy and store it securely before closing the dialog.
    ![Client Secret](readme_references/google/step_5/01-generated_client_secret_key.png)
 
->*Make sure both credentials are stored securely before clicking "OK"*
+**Note**: *Make sure both credentials are stored securely before clicking "OK"*
 
 2. Copy both and store them safely.
 
@@ -396,7 +396,8 @@ Fill in:
    
 3. Set App info:
    - **Callback URI / Redirect URL**:  
-     ```https://yourdomain.com/auth/twitter/callback
+     ```
+     https://yourdomain.com/auth/twitter/callback
      http://yourdomain.com/auth/twitter/callback
      https://yourdomain.test/auth/twitter/callback
      http://yourdomain.test/auth/twitter/callback
@@ -578,7 +579,7 @@ If you see the following error when attempting to log in using any provider:
 2. Place the file somewhere accessible  
    **Example (Laragon):**  
    `\laragon\bin\php\php-8.1.10-Win32-vs16-x64\extras\ssl\cacert.pem`  
-   > Any location is fine — just make sure the path is correct in your config.
+**Note**: *Any location is fine — just make sure the path is correct in your config.*
 
 3. Edit your `php.ini`:
 
