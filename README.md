@@ -175,7 +175,7 @@ Follow the steps carefully — each includes screenshots for references.
 >See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem) for guidance on resolving this with `cacert.pem`.
 
 
-[↑ Back to top](#table-of-contents) • [↑ Back to provider](#provider-anchor)
+[↑ Back to top](#table-of-contents) • [↑ Back to provider](#google)
 
 ---
 
@@ -533,7 +533,7 @@ protected $listen = [
 
 ## Troubleshoot
 
-### cURL Error 60 — SSL Certificate Problem
+### cURL Error 60 —SSL Certificate Problem
 
 If you see the following error when attempting to log in using any provider:
 
