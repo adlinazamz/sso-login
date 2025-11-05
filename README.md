@@ -12,13 +12,12 @@
 4. [Provider setup instructions (per provider)](#provider-setup)
    * [Google](#google)
    * [Facebook / Meta](#facebook--meta)
-   * [X](#twitter--x)
-   * [ON HOLD: Apple Sign in with Apple](#apple)
+   * [X](#x-twitter)
+   * [ON HOLD: Apple Sign in with Apple](#sign-in-with-apple)
 5. [Testing tips](#testing-tips)
 6. [Troubleshoot](#troubleshoot)
-   * [cURL Error 60](#troubleshoot-curl-error-60)
-   * [Meta Ineligible Submission Warning](#troubleshoot-meta-ineligible-submission)
-
+   * [cURL Error 60](#curl-error-60--ssl-certificate-problem)
+   * [Meta Ineligible Submission Warning](#facebook-currently-ineligible-for-submission-warning)
 7. [Appendix — sample `.env` variables & code snippets](#appendix)
 
 ---
@@ -111,7 +110,8 @@ Follow the steps carefully — each includes screenshots for references.
 
 ##### Step 3: Configure OAuth Consent Screen
 
-1. Open the newly created project
+1. Open the newly created project.
+
     ![Open Project](readme_references/google/step_3/01-select_created_project.png)
     *Open the user-auth-sso.*
 
@@ -194,12 +194,10 @@ Follow the steps carefully — each includes screenshots for references.
    ```
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
 
+[↑ Back to top](#table-of-contents) • [↑ Back to provider](#google)
 
-[↑ Back to top](#table-of-contents)
-
-[↑ Back to provider](#google)
 ---
 
 ### Facebook (Meta)
@@ -323,15 +321,13 @@ The dropdown below show the current active use case enabled for the Facebook API
    ```
 
 > ⚠️ If you see a warning about **Currently Ineligible for Submission**, this is expected for internal/test apps.  
-> See [Troubleshoot — Meta Ineligible Submission Warning](#troubleshoot-meta-ineligible-submission) for guidance on safely ignoring this warning.
+> See [Troubleshoot — Meta Ineligible Submission Warning](#facebook-currently-ineligible-for-submission-warning) for guidance on safely ignoring this warning.
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
 
 
-[↑ Back to top](#table-of-contents)
-
-[↑ Back to provider](#facebook)
+[↑ Back to top](#table-of-contents) • [↑ Back to provider](#facebook--meta)
 
 
 ---
@@ -370,7 +366,7 @@ Follow the steps carefully — each includes screenshots for reference.
 ![X Create project](readme_references/x/step_1/02-x_developer_dashboard.png)
 *X project fillable*
 4. Setup the new project 
-![X Project Setup](readme_references/x/step_1/03-x_new_project_setup.png)
+![X Project Setup](readme_references/x/step_1/03-new_project_setup.png)
 *X project setup*
 
 Fill in:
@@ -441,10 +437,10 @@ Fill in:
 ---
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
 
-[↑ Back to top](#table-of-contents)  
-[↑ Back to provider](#twitter--x)
+[↑ Back to top](#table-of-contents) • [↑ Back to provider](#x-twitter)
+
 
 ---
 
@@ -549,10 +545,9 @@ protected $listen = [
 ---
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60) for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
 
-[↑ Back to top](#table-of-contents)  
-[↑ Back to provider](#apple)
+[↑ Back to top](#table-of-contents) • [↑ Back to provider](#sign-in-with-apple)
 
 
 ---
@@ -569,7 +564,7 @@ protected $listen = [
 
 ## Troubleshoot
 
-### cURL Error 60 — SSL Certificate Problem {#troubleshoot-curl-error-60}
+### cURL Error 60 — SSL Certificate Problem
 
 If you see the following error when attempting to log in using any provider:
 
@@ -598,7 +593,7 @@ If you see the following error when attempting to log in using any provider:
 4. Restart Laragon/Apache
 
 
-### Facebook: “Currently Ineligible for Submission” Warning {#troubleshoot-meta-ineligible-submission}
+### Facebook: “Currently Ineligible for Submission” Warning
 
 
 If you see the following warning in your app dashboard:
@@ -655,35 +650,4 @@ APPLE_CLIENT_SECRET=your-apple-client-secret
 APPLE_REDIRECT_URI=https://localhost/auth/apple/callback
 
 
-
----
-
-## ✅ Revised “Appendix” Section
-
-```markdown
-## Appendix — Sample `.env` Variables & Controller Snippets
-
-### `.env` snippet for the API
-
-```dotenv
-APP_URL=https://your-domain.com
-
-   GOOGLE_CLIENT_ID=your-client-id
-   GOOGLE_CLIENT_SECRET=your-client-secret
-   GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback
-
-   FACEBOOK_CLIENT_ID=your-app-id
-   FACEBOOK_CLIENT_SECRET=your-app-secret
-   FACEBOOK_REDIRECT_URI=${APP_URL}/auth/facebook/callback
-
-   TWITTER_CLIENT_ID=your-api-key
-   TWITTER_CLIENT_SECRET=your-api-secret
-   TWITTER_REDIRECT_URI=${APP_URL}/auth/twitter/callback
-
-   APPLE_CLIENT_ID=your-service-id
-   APPLE_TEAM_ID=your-team-id
-   APPLE_KEY_ID=your-key-id
-   APPLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
-   APPLE_REDIRECT_URI=${APP_URL}/auth/apple/callback
-```
 ---
