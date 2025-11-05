@@ -380,7 +380,8 @@ Fill in:
 4. Click **Next** and  immediately directed to the **Keys & Tokens**
 
 5. Store the **App ID** and **App Secret Key**
->The value is shown only once. Please store it securely before clicking **App Setting**. Else, the Secret Key will needed to be regenerated.
+
+> *The value is shown only once. Please store it securely before clicking **App Setting**. Else, the Secret Key will needed to be regenerated.*
 ---
 
 #### Step 2: Enable 3-legged OAuth and Set Callback URL
@@ -390,13 +391,12 @@ Fill in:
 *X project setup*
 2. Enable **OAuth 1.0a** and setup based on the application need:
    - App permission: Read 
-   *Since this is for SSO authentication, **enable email permission** as it's required by this login flow.*
+   `Since this is for SSO authentication, **enable email permission** as it's required by this login flow.`
    - App Type
    
 3. Set App info:
    - **Callback URI / Redirect URL**:  
-     ```
-     https://yourdomain.com/auth/twitter/callback
+     ```https://yourdomain.com/auth/twitter/callback
      http://yourdomain.com/auth/twitter/callback
      https://yourdomain.test/auth/twitter/callback
      http://yourdomain.test/auth/twitter/callback
@@ -409,7 +409,7 @@ Fill in:
    - **Terms of Service** (can use placeholder example.com)
    - **Privacy Policy** (can use placeholder example.com)
 
-4. Save
+4. Save the authenticated setting for the app
 
 ---
 
@@ -422,7 +422,7 @@ Fill in:
    TWITTER_REDIRECT_URI=${APP_URL}/auth/twitter/callback
    ```
 
-> If forgot the **Client ID** and **Client Secret**, skip to step 3.2
+*If forgot the **Client ID** and **Client Secret**, skip to step 3.2*
 
 2. If the **Client ID** and **Client Secret** isn't saved before:
    - Go to **Keys and Tokens** tab
