@@ -1,24 +1,24 @@
 # Third-Party OAuth Providers — Setup & Integration
 
-> **Purpose:** This document explains, step-by-step, how to obtain and configure OAuth client credentials for common third‑party providers (Google, Facebook, X, Apple). It also shows how to wire them into a Laravel backend (Socialite) and how to use them from a Flutter client. Screenshots and a `cacert.pem` guidance section are included.
+> **Purpose:** This document explains, step-by-step, how to obtain and configure OAuth client credentials for common third-party providers (Google, Facebook, X, Apple). It also shows how to wire them into a Laravel backend (Socialite) and how to use them from a Flutter client. Screenshots and a `cacert.pem` guidance section are included.
 
 ---
 
 ## Table of contents
 
 1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Common concepts](#common-concepts)
-4. [Provider setup instructions (per provider)](#provider-setup)
+1. [Prerequisites](#prerequisites)
+1. [Common concepts](#common-concepts)
+1. [Provider setup instructions (per provider)](#provider-setup)
    * [Google](#google)
    * [Facebook / Meta](#facebook--meta)
    * [X](#x-twitter)
    * [ON HOLD: Apple Sign in with Apple](#sign-in-with-apple)
-5. [Testing tips](#testing-tips)
-6. [Troubleshoot](#troubleshoot)
+1. [Testing tips](#testing-tips)
+1. [Troubleshoot](#troubleshoot)
    * [cURL Error 60](#curl-error-60--ssl-certificate-problem)
    * [Meta Ineligible Submission Warning](#facebook-currently-ineligible-for-submission-warning)
-7. [Appendix — sample `.env` variables & code snippets](#appendix)
+1. [Appendix — sample `.env` variables & code snippets](#appendix)
 
 ---
 
@@ -51,7 +51,6 @@ This README documents the exact steps QA/Dev/DevOps or other engineers should fo
 
 Below are practical step-by-step instructions. Screenshots relevant to the step can be reviewed in readme_references folder.
 
-
 ### Google
 
 This section walks through creating Google OAuth credentials for your Laravel Socialite integration.  
@@ -62,110 +61,94 @@ Follow the steps carefully — each includes screenshots for references.
 #### Quick Summary 
 
 1. Create a Google Cloud project (for managing OAuth credentials)
-2. Configure the OAuth consent screen (set app name, audience, and contact info)
-3. Create OAuth Client ID (choose Web App, set redirect URIs)
-4. Copy Client ID & Secret → add to `.env` for Laravel Socialite
-5. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60)
-
+1. Configure the OAuth consent screen (set app name, audience, and contact info)
+1. Create OAuth Client ID (choose Web App, set redirect URIs)
+1. Copy Client ID & Secret → add to `.env` for Laravel Socialite
+1. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)
 
 ---
-#### Walkthrough
 
+#### Walkthrough
 
 ##### Step 1: Log in to Google Cloud Console
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/).
    - Sign in with your Google account.
    - You’ll land on the Google Cloud dashboard.
-
-2. After signing in, confirm that you can see the project dropdown on the top bar.
-   ![Google Cloud Dashboard](readme_references/google/step_1/01-google_cloud_dashboard.png)
+1. After signing in, confirm that you can see the project dropdown on the top bar.  
+   ![Google Cloud Dashboard](readme_references/google/step_1/01-google_cloud_dashboard.png)  
    *Main Google Cloud dashboard view.*
 
 ---
 
 ##### Step 2: Create a New Project
 
-1. Click the project dropdown on the top bar.
-    ![New Project Dropdown](readme_references/google/step_2/01-project_dropdown.png)
-    *Open project dropdown on top bar.*
-
-2. Select **New Project**.
-    ![New Project Button](readme_references/google/step_2/02-new_project.png)
-    *Create new project.*
-
-3. Enter project details (e.g., `user-auth-sso`).
-   *If there is an organization associated to the project, change according to the associated organization folder.*
-    ![New Project Detail Form](readme_references/google/step_2/03-project_detail_form.png)
-    *Create new project.*
-
-4. Click **Create**.
-
-    ![New Project Confirmation](readme_references/google/step_2/04-project_created.png)
-    *Project created.*
+1. Click the project dropdown on the top bar.  
+   ![New Project Dropdown](readme_references/google/step_2/01-project_dropdown.png)  
+   *Open project dropdown on top bar.*
+1. Select **New Project**.  
+   ![New Project Button](readme_references/google/step_2/02-new_project.png)  
+   *Create new project.*
+1. Enter project details (e.g., `user-auth-sso`).  
+   *If there is an organization associated with the project, change according to the associated organization folder.*  
+   ![New Project Detail Form](readme_references/google/step_2/03-project_detail_form.png)  
+   *Create new project.*
+1. Click **Create**.  
+   ![New Project Confirmation](readme_references/google/step_2/04-project_created.png)  
+   *Project created.*
 
 > 💡 *Note: It may take a few seconds for the new project to be created.*
-    
+
 ---
 
 ##### Step 3: Configure OAuth Consent Screen
 
-1. Open the newly created project.
-
-    ![Open Project](readme_references/google/step_3/01-select_created_project.png)
-    *Open the user-auth-sso.*
-
-2. In the left sidebar, go to **APIs & Services → OAuth consent screen**.
-    ![OAuth Consent](readme_references/google/step_3/02-navigate_Oauth_consent.png)
-    *Navigate to OAuth consent in the sidebar.*
-
-3. You'll be directed to the OAuth Overview. Click **Get Started**.
-    ![OAuth Overview](readme_references/google/step_3/03-oauth_overview_config.png)
-    *OAuth consent overview.*
-
-4. Fill out the project configuration:
-   - App name  (it's recommended to use the same name as the project created or based on the usage)
-   - User support email  (based on the developer associated by the project)
-    ![OAuth App Information](readme_references/google/step_3/04-app_information.png)
-    *App information form.*
-   - Audience: Choose based on the app purpose:
-    **Internal** for within the organization
-    **External** for any Google account
-    ![OAuth Audience](readme_references/google/step_3/04-audience_type.png)
-    *Select audience type corresponding of the app usage.*   
-   - Contact Information: Developer email for google to notify
-
-5. Finish up the setup and agree to the Google API Services: User Data Policy and click **Save and Continue**. Then click **Create**
-   ![Consent Screen Setup](readme_references/google/step_3/05-agree_google_api_service.png)
+1. Open the newly created project.  
+   ![Open Project](readme_references/google/step_3/01-select_created_project.png)  
+   *Open the user-auth-sso.*
+1. In the left sidebar, go to **APIs & Services → OAuth consent screen**.  
+   ![OAuth Consent](readme_references/google/step_3/02-navigate_Oauth_consent.png)  
+   *Navigate to OAuth consent in the sidebar.*
+1. You'll be directed to the OAuth Overview. Click **Get Started**.  
+   ![OAuth Overview](readme_references/google/step_3/03-oauth_overview_config.png)  
+   *OAuth consent overview.*
+1. Fill out the project configuration:  
+   - App name (recommended: same as project name)  
+   - User support email (developer associated with the project)  
+     ![OAuth App Information](readme_references/google/step_3/04-app_information.png)  
+     *App information form.*  
+   - Audience: Choose based on app purpose:  
+     **Internal** (within organization) or **External** (any Google account)  
+     ![OAuth Audience](readme_references/google/step_3/04-audience_type.png)  
+     *Select audience type based on app usage.*  
+   - Contact Information: developer email for notifications.
+1. Finish setup, agree to the Google API Services: User Data Policy, and click **Save and Continue**.  
+   Then click **Create**.  
+   ![Consent Screen Setup](readme_references/google/step_3/05-agree_google_api_service.png)  
    *Filling in OAuth consent screen details.*
-
-6. Once created, you'll be directed to the OAuth Overview
+1. Once created, you'll be directed to the OAuth Overview.  
    ![Successful Consent Screen Setup](readme_references/google/step_3/06-successful_OAuth_consent.png)
 
 ---
 
 ##### Step 4: Create OAuth Client ID
 
-1. Click **Create OAuth client**
+1. Click **Create OAuth client**.  
    ![Create OAuth Client](readme_references/google/step_4/01-create_client_OAuth.png)
-
-2. Choose the application type  from the drop down *in this case, we use **Web Application***. 
+1. Choose the application type — in this case, **Web Application**.  
    ![OAuth Client Application](readme_references/google/step_4/02-choosing_application_type.png)
-
-3. Fill out:
-   - Name  (eg:`user-auth-sso`)
-   - Authorized JavaScript origins (optional and skippable if not necessary)
-   - Authorized redirect URIs:  
+1. Fill out:
+   - Name (e.g. `user-auth-sso`)
+   - Authorized JavaScript origins (optional)
+   - Authorized redirect URIs:
      ```
      http://localhost:8000/auth/google/callback
      https://localhost:8000/auth/google/callback
      http://yourdomain.com/auth/google/callback
      https://yourdomain.com/auth/google/callback
      ```
-
-**Note:** Google OAuth doesn't accept `yourdomain.test` — only real TLDs are allowed.
-
-4. Click **Create**.
+   **Note:** Google OAuth doesn’t accept `.test` domains — only real TLDs are allowed.
+1. Click **Create**.
 
 > The creation process for the OAuth client may take anywhere from a few minutes to a few hours.
 
@@ -173,30 +156,26 @@ Follow the steps carefully — each includes screenshots for references.
 
 ##### Step 5: Copy Your Client Credentials
 
-1. A dialog will appear with your **Client ID** and **Client Secret**. 
-*Sensitive values (Client ID and Client Secret) have been redacted for security.*
-
-   - 🔴 **Client ID** (highlighted in red box): This value can be copied and retrieved later from the Clients tab.
-   ![Client ID](readme_references/google/step_5/01-generated_client_access_id.png)
-   - 🟢 **Client Secret** (highlighted in green box): This value is only shown once. You must copy and store it securely before closing the dialog.
-   ![Client Secret](readme_references/google/step_5/01-generated_client_secret_key.png)
-
-**Note**: *Make sure both credentials are stored securely before clicking "OK"*
-
-2. Copy both and store them safely.
-
-3. Add them to your `.env` file:
-
+1. A dialog will appear with your **Client ID** and **Client Secret**.  
+   *Sensitive values (Client ID and Client Secret) have been redacted for security.*
+   - 🔴 **Client ID** — shown in the red box.  
+     ![Client ID](readme_references/google/step_5/01-generated_client_access_id.png)
+   - 🟢 **Client Secret** — shown in the green box. Only visible once.  
+     ![Client Secret](readme_references/google/step_5/01-generated_client_secret_key.png)
+   > *Make sure both credentials are stored securely before clicking "OK".*
+1. Copy both and store them safely.
+1. Add them to your `.env` file:
    ```env
    GOOGLE_CLIENT_ID=your-client-id
    GOOGLE_CLIENT_SECRET=your-client-secret
    GOOGLE_REDIRECT_URI=${APP_URL}/auth/google/callback
    ```
 
-> ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
+>⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
+>See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem) for guidance on resolving this with `cacert.pem`.
 
-[↑ Back to top](#table-of-contents) • [↑ Back to provider](#google)
+
+[↑ Back to top](#table-of-contents) • [↑ Back to provider](#provider-anchor)
 
 ---
 
@@ -324,7 +303,7 @@ The dropdown below show the current active use case enabled for the Facebook API
 > See [Troubleshoot — Meta Ineligible Submission Warning](#facebook-currently-ineligible-for-submission-warning) for guidance on safely ignoring this warning.
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem) for guidance on resolving this with `cacert.pem`.
 
 
 [↑ Back to top](#table-of-contents) • [↑ Back to provider](#facebook--meta)
@@ -386,31 +365,30 @@ Fill in:
 
 #### Step 2: Enable 3-legged OAuth and Set Callback URL
 
-1. In your app settings, go to **User authentication settings**
-![X Project Setup](readme_references/x/step_2/01-app_setting.png)
-*X project setup*
-2. Enable **OAuth 1.0a** and setup based on the application need:
-   - App permission: Read 
-   `Since this is for SSO authentication, **enable email permission** as it's required by this login flow.`
-   - App Type
-   
-3. Set App info:
-   - **Callback URI / Redirect URL**:  
-     ```
-     https://yourdomain.com/auth/twitter/callback
-     http://yourdomain.com/auth/twitter/callback
-     https://yourdomain.test/auth/twitter/callback
-     http://yourdomain.test/auth/twitter/callback
-     https://localhost/auth/twitter/callback
-     http://localhost/auth/twitter/callback
-     ```
-   - **Website URL**: Your app or company site (can be placeholder for testing)
-   *As we enabled the email permission, a valid Website URL is required. Use a real or placeholder domain (e.g. https://example.com)  localhost URLs are not accepted.*
+   1. In your app settings, go to **User authentication settings**
+   ![X Project Setup](readme_references/x/step_2/01-app_setting.png)
+   *X project setup*
+   2. Enable **OAuth 1.0a** and setup based on the application need:
+      - App permission: Read 
+      `Since this is for SSO authentication, **enable email permission** as it's required by this login flow.`
+      - App Type
+      
+   3. Set App info:
+      - **Callback URI / Redirect URL**:  
+      ```
+      https://yourdomain.com/auth/twitter/callback
+      http://yourdomain.com/auth/twitter/callback
+      https://yourdomain.test/auth/twitter/callback
+      http://yourdomain.test/auth/twitter/callback
+      https://localhost/auth/twitter/callback
+      http://localhost/auth/twitter/callback
+      ```
+      - **Website URL**: Your app or company site (can be placeholder for testing)
+      *As we enabled the email permission, a valid Website URL is required. Use a real or placeholder domain (e.g. https://example.com)  localhost URLs are not accepted.*
+      - **Terms of Service** (can use placeholder example.com)
+      - **Privacy Policy** (can use placeholder example.com)
 
-   - **Terms of Service** (can use placeholder example.com)
-   - **Privacy Policy** (can use placeholder example.com)
-
-4. Save the authenticated setting for the app
+   4. Save the authenticated setting for the app
 
 ---
 
@@ -445,7 +423,7 @@ Fill in:
 
 ---
 
-## Sign in with Apple
+### Sign in with Apple
 
 This section walks through creating **Sign in with Apple** OAuth credentials for your Laravel Socialite integration.  
 Follow the steps carefully — each includes screenshots for reference.
@@ -454,7 +432,7 @@ Follow the steps carefully — each includes screenshots for reference.
 
 ---
 
-### Quick Summary
+#### Quick Summary
 
 1. Create an App ID and Service ID via [Apple Developer Portal](https://developer.apple.com/account/)
 2. Enable Sign in with Apple and configure redirect URI
@@ -553,16 +531,6 @@ protected $listen = [
 
 ---
 
-## Testing tips 
-
-* Many providers (GitHub, GitLab, Bitbucket, Slack) **do not honor** `prompt=login`.
-* Two practical techniques for test workflows:
-
-  1. Add a random `state` per request: `->with(['state' => uniqid('reauth_', true)])` to help force authorization UI.
-  2. In local test, redirect user to the provider logout page if available (Slack, GitLab have signout endpoints). GitHub/Bitbucket do not have simple logout URLs you can rely on.
-
----
-
 ## Troubleshoot
 
 ### cURL Error 60 — SSL Certificate Problem
@@ -649,6 +617,4 @@ FACEBOOK_REDIRECT_URI=https://localhost/auth/facebook/callback
 APPLE_CLIENT_ID=your-apple-client-id
 APPLE_CLIENT_SECRET=your-apple-client-secret
 APPLE_REDIRECT_URI=https://localhost/auth/apple/callback
-
-
 ---
