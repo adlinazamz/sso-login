@@ -37,7 +37,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $provider = session('last_oauth_provider'); // fallback to github, if needed
+        $user = Auth::user();
+
+        if ($user) {
+            $user->update(['session_token' => null]);
+        }
 
         Auth::guard('web')->logout();
         $request->session()->invalidate();
@@ -46,5 +50,5 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
-   
+    
 }

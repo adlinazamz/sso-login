@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('provider_id')->nullable();
             $table->string('avatar')->nullable();
             $table->rememberToken();
+            $table->string('session_token')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('session_token');
+        });
         Schema::dropIfExists('users');
     }
 };
