@@ -605,16 +605,16 @@ X_CLIENT_ID=your_x_id
 X_CLIENT_SECRET=your_x_secret
 X_REDIRECT=${APP_URL}/auth/x/callback
 
-GOOGLE_CLIENT_ID=y
+GOOGLE_CLIENT_ID=your-google-id
 GOOGLE_CLIENT_SECRET=your-client-secret
 GOOGLE_REDIRECT=${APP_URL}/auth/google/callback
 
-FACEBOOK_CLIENT_ID=2017647425442989
-FACEBOOK_CLIENT_SECRET=1a169aa14d1f768d1edad3e8115a5891
-FACEBOOK_REDIRECT_URI=https://localhost/auth/facebook/callback
+FACEBOOK_CLIENT_ID=your-facebook-id
+FACEBOOK_CLIENT_SECRET=your-client-secret
+FACEBOOK_REDIRECT_URI=${APP_URL}/auth/facebook/callback
 
 APPLE_CLIENT_ID=your-apple-client-id
 APPLE_CLIENT_SECRET=your-apple-client-secret
-APPLE_REDIRECT_URI=https://localhost/auth/apple/callback
+APPLE_REDIRECT_URI=${APP_URL}/auth/apple/callback
 ```
 ---
