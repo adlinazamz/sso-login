@@ -118,6 +118,26 @@ class ThirdPartyProviderAuthController extends Controller
                 $providerId = $socialUser->getId();
             }
 
+            // --- EMAIL VERIFICATION CHECK---
+            $emailVerified = false;
+
+            if(in_array($provider, ['google', 'apple'])){
+                $emailVerified = isset($oidcUser['email_verified']) ? (bool)$oidcUser['email_verified'] : false;
+            } elseif ($provider === 'x'){
+                $emailVerified = false;
+            }
+            if(!$emailVerified){
+                Log::warning("Unverified email detected for {$provider}", ['email' => $email]);
+
+                // If user exists, force them to verify manually
+                $existingUser = User::where('email', $email)->first();
+                if ($existingUser && !$existingUser->hasVerifiedEmail()) {
+                    Auth::logout();
+                    return redirect()->route('verification.notice')
+                        ->with('status', 'Please verify your email to continue.');
+                }
+            }
+
             // --- USER MANAGEMENT ---
             $user = User::where('provider', $provider)
                 ->where('provider_id', $providerId)
@@ -143,6 +163,10 @@ class ThirdPartyProviderAuthController extends Controller
                     'provider' => $provider,
                     'provider_id' => $providerId,
                 ]);
+                if (!empty($emailVerified) && !$user->hasVerifiedEmail()) {
+                    $user->markEmailAsVerified();
+                    Log::info("Verification email sent to {$user->email}");
+                }
             }
 
             // --- LOGIN + JWT ---
@@ -210,6 +234,7 @@ class ThirdPartyProviderAuthController extends Controller
                 'sub' => $decoded->sub ?? null,
                 'email' => $decoded->email ?? null,
                 'name' => $decoded->name ?? null,
+                'email_verified' => $decoded->email_verified ?? false,
                 'avatar' => null,
             ];
         } catch (\Exception $e) {

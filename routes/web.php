@@ -37,3 +37,7 @@ require __DIR__.'/auth.php';
 // Third-party authentication routes
 Route::get('/auth/{provider}/redirect', [ThirdPartyProviderAuthController::class, 'redirect'])->name('auth.provider.redirect');
 Route::get('/auth/{provider}/callback', [ThirdPartyProviderAuthController::class, 'callback'])->name('auth.provider.callback');
+
+Route::get('/verify-email', function(){
+    return view('auth.verify-email');
+})->name('verify-email');
