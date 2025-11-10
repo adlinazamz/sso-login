@@ -38,6 +38,6 @@ require __DIR__.'/auth.php';
 Route::get('/auth/{provider}/redirect', [ThirdPartyProviderAuthController::class, 'redirect'])->name('auth.provider.redirect');
 Route::get('/auth/{provider}/callback', [ThirdPartyProviderAuthController::class, 'callback'])->name('auth.provider.callback');
 
-Route::get('/verify-email', function(){
-    return view('auth.verify-email');
-})->name('verify-email');
+Route::get('/email/verify', function () {
+    return view('auth.verify-email'); // or your email verification blade
+})->middleware('auth')->name('verification.notice');
