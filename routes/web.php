@@ -39,5 +39,5 @@ Route::get('/auth/{provider}/redirect', [ThirdPartyProviderAuthController::class
 Route::get('/auth/{provider}/callback', [ThirdPartyProviderAuthController::class, 'callback'])->name('auth.provider.callback');
 
 Route::get('/email/verify', function () {
-    return view('auth.verify-email'); // or your email verification blade
+    return view('auth.verify-email'); // or email verification blade
 })->middleware('auth')->name('verification.notice');

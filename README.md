@@ -13,10 +13,11 @@
    * [Google](#google)
    * [Facebook / Meta](#facebook--meta)
    * [X](#x-twitter)
-   * [ON HOLD: Apple Sign in with Apple](#sign-in-with-apple)
+   * [WIP: Apple Sign in with Apple](#sign-in-with-apple)
+   * [WIP: Microsoft Entra ID](#microsoft-entra-id)
 1. [Testing tips](#testing-tips)
 1. [Troubleshoot](#troubleshoot)
-   * [cURL Error 60](#curl-error-60--ssl-certificate-problem)
+   * [cURL Error 60](#curl-error-60)
    * [Meta Ineligible Submission Warning](#facebook-currently-ineligible-for-submission-warning)
 1. [Appendix — sample `.env` variables & code snippets](#appendix)
 
@@ -64,7 +65,7 @@ Follow the steps carefully — each includes screenshots for references.
 1. Configure the OAuth consent screen (set app name, audience, and contact info)
 1. Create OAuth Client ID (choose Web App, set redirect URIs)
 1. Copy Client ID & Secret → add to `.env` for Laravel Socialite
-1. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)
+1. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#curl-error-60)
 
 ---
 
@@ -172,7 +173,7 @@ Follow the steps carefully — each includes screenshots for references.
    ```
 
 >⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
->See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem) for guidance on resolving this with `cacert.pem`.
+>See [Troubleshoot — cURL Error 60](#curl-error-60) for guidance on resolving this with `cacert.pem`.
 
 
 [↑ Back to top](#table-of-contents) • [↑ Back to provider](#google)
@@ -208,7 +209,7 @@ Follow the steps carefully — each includes screenshots for references.
 
 >*If logged in through Facebook, code will be sent to your facebook account email*
 
-### Step 2: Create a New App
+##### Step 2: Create a New App
 
 1. Go to [Facebook for Developers → My Apps](https://developers.facebook.com/apps/)
 
@@ -239,7 +240,7 @@ Follow the steps carefully — each includes screenshots for references.
 ---
 > **Optional:** Steps 3 and 4 are only needed if you're customizing the use case or testing the API manually.
 
-### Step 3: Setting up the application (Optional)
+##### Step 3: Setting up the application (Optional)
 
 1. Following the app customization and requirement, navigate to **Customize the Authenticate and request data from users with Facebook Login use case**
 ![Navigate Use Case](readme_references/facebook/step_3/01-use_case_config.png)  
@@ -253,7 +254,7 @@ Follow the steps carefully — each includes screenshots for references.
 
 ---
 >**Optional:** Steps 3 and 4 are only needed if you're customizing the use case or testing the API manually.
-### Step 4: Application API testing (optional)
+##### Step 4: Application API testing (optional)
 
 1. Just like in Step 3.1, navigate to **dashboard** and click **Review and complete testing requirement**
 ![App API Test](readme_references/facebook/step_4/01-app_api_testing.png)
@@ -277,7 +278,7 @@ The dropdown below show the current active use case enabled for the Facebook API
 *Successful API test*
 ---
 
-### Step 5: Get App Credentials
+##### Step 5: Get App Credentials
 
 1. Go to **Settings → Basic**
 ![Navigate Settings Basic ](readme_references/facebook/step_5/01-navigate_app_settings_basic.png)
@@ -303,7 +304,7 @@ The dropdown below show the current active use case enabled for the Facebook API
 > See [Troubleshoot — Meta Ineligible Submission Warning](#facebook-currently-ineligible-for-submission-warning) for guidance on safely ignoring this warning.
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem) for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60) for guidance on resolving this with `cacert.pem`.
 
 
 [↑ Back to top](#table-of-contents) • [↑ Back to provider](#facebook--meta)
@@ -320,7 +321,7 @@ Follow the steps carefully — each includes screenshots for reference.
 >Please note that on the free tier, X only allows a single OAuth app quota per account.
 ---
 
-### Quick Summary
+#### Quick Summary
 
 1. Create a X Developer App via [Twitter Developer Portal](https://developer.x.com/en)
 2. Set up project and app details (name, use case, description)
@@ -331,9 +332,9 @@ Follow the steps carefully — each includes screenshots for reference.
 
 ---
 
-### Walkthrough
+#### Walkthrough
 
-#### Step 1: Create a X Developer App
+##### Step 1: Create a X Developer App
 
 1. Go to [X Developer Portal](https://developer.x.com/en)
 ![X Developer Portal](readme_references/x/step_1/01-twitter_dashboard.png)
@@ -362,7 +363,7 @@ Fill in:
 > The value is shown only once. Please store it securely before clicking **App Setting**. Else, the Secret Key will needed to be regenerated.
 ---
 
-#### Step 2: Enable 3-legged OAuth and Set Callback URL
+##### Step 2: Enable 3-legged OAuth and Set Callback URL
 
    1. In your app settings, go to **User authentication settings**
    ![X Project Setup](readme_references/x/step_2/01-app_setting.png)
@@ -391,7 +392,7 @@ Fill in:
 
 ---
 
-#### Step 3: Get API Key and Secret
+##### Step 3: Get API Key and Secret
 
 1. Add the **Client ID** and **Client Secret** to your `.env` file:
    ```env
@@ -415,7 +416,7 @@ Fill in:
 ---
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60)for guidance on resolving this with `cacert.pem`.
 
 [↑ Back to top](#table-of-contents) • [↑ Back to provider](#x-twitter)
 
@@ -442,9 +443,9 @@ Follow the steps carefully — each includes screenshots for reference.
 
 ---
 
-### Walkthrough
+#### Walkthrough
 
-#### Step 1: Log in to Apple Developer Portal
+##### Step 1: Log in to Apple Developer Portal
 
 1. Go to [Apple Developer Portal](https://developer.apple.com/account/)
 2. Sign in with your Apple ID
@@ -452,7 +453,7 @@ Follow the steps carefully — each includes screenshots for reference.
 
 ---
 
-#### Step 2: Create App ID and Service ID
+##### Step 2: Create App ID and Service ID
 
 1. Under **Identifiers**, click **+** to create a new App ID
 2. Choose **App IDs → App**
@@ -472,7 +473,7 @@ Follow the steps carefully — each includes screenshots for reference.
 
 ---
 
-#### Step 3: Generate Private Key
+##### Step 3: Generate Private Key
 
 1. Go to **Keys** → click **+**
 2. Name the key (e.g. `Apple SSO Key`)
@@ -484,7 +485,7 @@ Follow the steps carefully — each includes screenshots for reference.
 
 ---
 
-#### Step 4: Add Credentials to `.env`
+##### Step 4: Add Credentials to `.env`
 
 ```env
 APPLE_CLIENT_ID=your-service-id
@@ -496,7 +497,7 @@ APPLE_REDIRECT_URI=${APP_URL}/auth/apple/callback
 
 ---
 
-#### Step 5: Configure Laravel Socialite
+##### Step 5: Configure Laravel Socialite
 
 1. In `config/services.php`:
 
@@ -523,16 +524,132 @@ protected $listen = [
 ---
 
 > ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
-> See [Troubleshoot — cURL Error 60](#curl-error-60--ssl-certificate-problem)for guidance on resolving this with `cacert.pem`.
+> See [Troubleshoot — cURL Error 60](#curl-error-60)for guidance on resolving this with `cacert.pem`.
 
 [↑ Back to top](#table-of-contents) • [↑ Back to provider](#sign-in-with-apple)
 
+---
+### Microsoft Entra ID
+
+This section walks through creating **Microsoft Entra ID** OAuth credentials for your Laravel Socialite integration.  
+Follow the steps carefully — each includes screenshots for reference.
+
+> ⚠️ This setup is intended for testing purposes only. Ensure you have a Microsoft Azure Developer account enabled.
+
+---
+
+#### Prerequisites
+
+- A Microsoft Azure account  
+- Access to the correct tenant  
+- Laravel Socialite installed and configured  
+
+---
+
+#### Quick Summary
+
+1. Register application via Microsoft Entra ID in the [Azure portal](https://portal.azure.com/)  
+2. Enable Microsoft identity platform and configure redirect URI  
+3. Generate and download a client secret  
+4. Copy credentials → add to `.env`  
+5. Configure Laravel Socialite and event listener  
+6. If you hit **cURL error 60**, see [Troubleshoot — cURL Error 60](#troubleshoot-curl-error-60)  
+
+---
+
+#### Walkthrough
+
+##### Step 1: Log in to Microsoft Entra ID
+
+1. Go to [Azure Portal](https://portal.azure.com/)  
+2. Sign in with your Microsoft account  
+3. Navigate to **Microsoft Entra ID**  
+
+---
+
+##### Step 2: Register Application
+
+1. In the left sidebar, select **Overview**  
+2. Click **Add → App registration**  
+3. Fill in:
+   - **Name** (e.g. `user-auth-sso`)  
+   - **Supported account types**  
+   - **Redirect URI (Web)**  
+     ```
+     http://localhost:8000/callback
+     https://localhost:8000/callback
+     ```
+     > If your server has a valid SSL certificate, use `https://your-domain.com/callback`  
+4. Click **Register** — you'll be redirected to the app dashboard  
+   > If not, manually navigate to **App registrations → Your Application**  
+
+---
+
+##### Step 3: Create Client Secret
+
+1. From the app dashboard, click **Certificates & secrets**  
+2. Click **New client secret**  
+3. Fill in:
+   - **Description**  
+   - **Expiration period**  
+4. Click **Add**  
+5. Copy and store the **Client Secret value** securely — it’s only shown once  
+   - **Application (client) ID** → used as `MICROSOFT_CLIENT_ID`  
+   - **Client Secret value** → used as `MICROSOFT_CLIENT_SECRET`  
+
+> ⚠️ These values are required for all future usage of Microsoft as a provider.  
+> If you didn’t copy the Client ID earlier, go to **Overview** to retrieve the Application (client) ID.
+
+---
+
+##### Step 4: Add Credentials to `.env`
+
+```env
+MICROSOFT_CLIENT_ID=your-client-id
+MICROSOFT_CLIENT_SECRET=your-client-secret
+MICROSOFT_REDIRECT_URI=${APP_URL}/callback
+```
+
+> Ensure the redirect URI matches what you registered in Azure.
+
+---
+
+##### Step 5: Configure Laravel Socialite
+
+In `config/services.php`:
+
+```php
+'microsoft' => [
+    'client_id' => env('MICROSOFT_CLIENT_ID'),
+    'client_secret' => env('MICROSOFT_CLIENT_SECRET'),
+    'redirect' => env('MICROSOFT_REDIRECT_URI'),
+],
+```
+
+---
+
+### Integration Test
+
+- Visit `/auth/microsoft/redirect` in your browser  
+- You should be redirected to the Microsoft login page  
+- After login, you’ll be redirected back to your app with user details  
+
+---
+
+### Troubleshoot — cURL Error 60
+
+> ⚠️ If you encounter **cURL error 60: SSL certificate problem**, your system may be missing a trusted CA bundle.  
+> Download and configure `cacert.pem` to resolve this issue.  
+
+---
+
+[↑ Back to top](#table-of-contents) • [↑ Back to provider](#microsoft-entra-id)
 
 ---
 
 ## Troubleshoot
 
-### cURL Error 60 -- SSL Certificate Problem
+### cURL Error 60
 
 If you see the following error when attempting to log in using any provider:
 
@@ -591,7 +708,6 @@ You only need to resolve this if:
 
 > ⚠️ **Missing email scope**  
 > Some providers (like Apple or Twitter) require explicit permission to access the user’s email. Make sure the correct scopes are enabled in the provider dashboard and requested in your code.
-
 **Note**: *Since the current application is using **SSL**, make sure **SSL enabled in port 443**. *
 ---
 
