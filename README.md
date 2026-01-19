@@ -25,7 +25,7 @@
 
 ## Overview
 
-This README documents the exact steps QA/Dev/DevOps or other engineers should follow to create OAuth client credentials on 3rd party provider consoles and plug them into our Laravel backend (using Socialite) to authenticate users via third-party providers.
+This README documents the exact steps QA/Dev/DevOps or other engineers should follow to create OAuth client credentials on 3rd party provider consoles and plug them into our Laravel backend (using Socialite) to authenticate users via third-party providers. 
 
 ---
 
@@ -289,7 +289,7 @@ The dropdown below show the current active use case enabled for the Facebook API
    - 🔴 **Client ID** (highlighted in red box)
    - 🟢 **Client Secret** (highlighted in green box)
 
-   ![App Credentials](readme_references/facebook/step_5/01-app_credentials.png)  
+   ![App Credentials](readme_references/facebook/step_5/02-client_id_secret.png)  
    *Client ID and Client Secret key.*
 
 3. Add them to your `.env` file:
