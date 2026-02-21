@@ -1,6 +1,6 @@
 # Third-Party OAuth Providers — Setup & Integration
 
-> **Purpose:** This document explains, step-by-step, how to obtain and configure OAuth client credentials for common third-party providers (Google, Facebook, X, Apple). It also shows how to wire them into a Laravel backend (Socialite) and how to use them from a Flutter client. Screenshots and a `cacert.pem` guidance section are included.
+> **Purpose:** This document explains, step-by-step, how to obtain and configure OAuth client credentials for common third-party providers (Google, Facebook, X, Apple). It also shows how to wire them into a Laravel backend (Socialite) and how to use them. Screenshots and a `cacert.pem` guidance section are included.
 
 ---
 
@@ -33,7 +33,6 @@ This README documents the exact steps QA/Dev/DevOps or other engineers should fo
 
 * Access to the provider developer console (Google Cloud, Meta for Developers, GitHub Settings, GitLab, Slack, Bitbucket, LinkedIn, Apple).
 * A Laravel app with `laravel/socialite` installed.
-* A Flutter app capable of receiving a redirect (deep link / custom scheme or universal link).
 * A registered redirect URI that points to your backend endpoint: `https://<YOUR_DOMAIN>/auth/{provider}/callback`
 * (Optional) A `cacert.pem` bundle if your environment needs an explicit CA bundle for Guzzle.
 
